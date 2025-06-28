@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Dimensions, FlatList } from 'react-native';
 import { Text, Button, Chip } from 'react-native-paper';
+import { observer } from 'mobx-react-lite';
+import { useStore } from '../contexts/StoreContext';
 import { commonStyles } from '../styles/commonStyles';
 
 // 导入词汇数据
@@ -28,11 +30,12 @@ interface WordItem {
   phrases?: Phrase[];
 }
 
-const CardScreen = () => {
+const CardScreen = observer(() => {
+  const { settingsStore } = useStore();
   const [_currentIndex, _setCurrentIndex] = useState(0);
   const [dailyWords, setDailyWords] = useState<WordItem[]>([]);
 
-  // 随机选择50个词汇
+  // 根据全局设置选择对应数量的词汇
   useEffect(() => {
     const allWords = [
       ...CET4_DATA,
@@ -42,9 +45,9 @@ const CardScreen = () => {
       ...TOEFL_DATA,
     ];
     const shuffled = allWords.sort(() => 0.5 - Math.random());
-    const selected = shuffled.slice(0, 50);
+    const selected = shuffled.slice(0, settingsStore.dailyWordCount);
     setDailyWords(selected);
-  }, []);
+  }, [settingsStore.dailyWordCount]);
 
   const renderWordCard = ({
     item,
@@ -122,7 +125,7 @@ const CardScreen = () => {
       <View style={commonStyles.screenContainer}>
         <View style={styles.loadingCard}>
           <Text variant="headlineSmall" style={styles.loadingText}>
-            正在加载今日词汇...
+            正在加载今日 {settingsStore.dailyWordCount} 个词汇...
           </Text>
         </View>
       </View>
@@ -151,7 +154,7 @@ const CardScreen = () => {
       />
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   screenContainer: {

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { StatusBar } from 'react-native';
 import { PaperProvider, BottomNavigation } from 'react-native-paper';
+import { StoreProvider } from './src/contexts/StoreContext';
 
 // 导入页面组件
 import CalendarScreen from './src/screens/CalendarScreen';
@@ -37,24 +38,26 @@ const App = () => {
   });
 
   return (
-    <PaperProvider>
-      <StatusBar
-        barStyle="dark-content"
-        backgroundColor="#f5f5f5"
-        translucent={false}
-      />
-      <BottomNavigation
-        navigationState={{ index, routes }}
-        onIndexChange={setIndex}
-        renderScene={renderScene}
-        sceneAnimationEnabled={true}
-        sceneAnimationType="opacity"
-        activeColor="#6750a4"
-        inactiveColor="#757575"
-        labeled={false}
-        shifting={true}
-      />
-    </PaperProvider>
+    <StoreProvider>
+      <PaperProvider>
+        <StatusBar
+          barStyle="dark-content"
+          backgroundColor="#f5f5f5"
+          translucent={false}
+        />
+        <BottomNavigation
+          navigationState={{ index, routes }}
+          onIndexChange={setIndex}
+          renderScene={renderScene}
+          sceneAnimationEnabled={true}
+          sceneAnimationType="opacity"
+          activeColor="#6750a4"
+          inactiveColor="#757575"
+          labeled={false}
+          shifting={true}
+        />
+      </PaperProvider>
+    </StoreProvider>
   );
 };
 

@@ -11,7 +11,10 @@ import {
   Portal,
   TextInput,
 } from 'react-native-paper';
+import { observer } from 'mobx-react-lite';
+import { useStore } from '../contexts/StoreContext';
 import { commonStyles } from '../styles/commonStyles';
+import { DICTIONARY_TYPES } from '../stores/SettingsStore';
 
 // 图标组件定义
 const AccountIcon = (props: any) => <List.Icon {...props} icon="account" />;
@@ -24,10 +27,10 @@ const AccountEditIcon = (props: any) => (
   <List.Icon {...props} icon="account-edit" />
 );
 
-const ProfileScreen = () => {
+const ProfileScreen = observer(() => {
+  const { settingsStore } = useStore();
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [drawerTitle, setDrawerTitle] = useState('');
-  const [wordCount, setWordCount] = useState('20');
   const [nickname, setNickname] = useState('张三');
   const [email, setEmail] = useState('zhangsan@example.com');
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -114,17 +117,24 @@ const ProfileScreen = () => {
           />
           <List.Item
             title="学习计划"
-            description="自定义每日学习的单词数量"
+            description={settingsStore.dailyWordCountText}
             left={AccountIcon}
             right={ChevronRightIcon}
             onPress={() => openDrawer('学习计划')}
           />
           <List.Item
             title="辞书选择"
-            description="选择要学习的词汇库"
+            description={settingsStore.selectedDictionaryText}
             left={CogIcon}
             right={ChevronRightIcon}
             onPress={() => openDrawer('辞书选择')}
+          />
+          <List.Item
+            title="关于我们"
+            description="了解更多关于我们的信息"
+            left={AccountIcon}
+            right={ChevronRightIcon}
+            onPress={() => console.log('关于我们')}
           />
         </List.Section>
 
@@ -202,11 +212,6 @@ const ProfileScreen = () => {
                     onPress={() => console.log('从相册选择')}
                   />
                   <Drawer.Item
-                    label="拍照"
-                    icon="camera"
-                    onPress={() => console.log('拍照')}
-                  />
-                  <Drawer.Item
                     label="使用默认头像"
                     icon="account-circle"
                     onPress={() => console.log('使用默认头像')}
@@ -217,12 +222,17 @@ const ProfileScreen = () => {
               {drawerTitle === '学习计划' && (
                 <>
                   <Text variant="bodyLarge" style={styles.inputLabel}>
-                    请输入每天学习的单词数量（5-100）
+                    请输入每天学习的单词数量
                   </Text>
                   <TextInput
                     label="单词数量"
-                    value={wordCount}
-                    onChangeText={setWordCount}
+                    value={settingsStore.dailyWordCount.toString()}
+                    onChangeText={text => {
+                      const count = parseInt(text, 10);
+                      if (!isNaN(count)) {
+                        settingsStore.setDailyWordCount(count);
+                      }
+                    }}
                     keyboardType="numeric"
                     mode="outlined"
                     style={styles.textInput}
@@ -231,21 +241,21 @@ const ProfileScreen = () => {
                   <View style={styles.buttonRow}>
                     <Button
                       mode="outlined"
-                      onPress={() => setWordCount('20')}
+                      onPress={() => settingsStore.setDailyWordCount(20)}
                       style={styles.presetButton}
                     >
                       20
                     </Button>
                     <Button
                       mode="outlined"
-                      onPress={() => setWordCount('40')}
+                      onPress={() => settingsStore.setDailyWordCount(40)}
                       style={styles.presetButton}
                     >
                       40
                     </Button>
                     <Button
                       mode="outlined"
-                      onPress={() => setWordCount('60')}
+                      onPress={() => settingsStore.setDailyWordCount(60)}
                       style={styles.presetButton}
                     >
                       60
@@ -254,14 +264,14 @@ const ProfileScreen = () => {
                   <View style={styles.buttonRow}>
                     <Button
                       mode="outlined"
-                      onPress={() => setWordCount('80')}
+                      onPress={() => settingsStore.setDailyWordCount(80)}
                       style={styles.presetButton}
                     >
                       80
                     </Button>
                     <Button
                       mode="outlined"
-                      onPress={() => setWordCount('100')}
+                      onPress={() => settingsStore.setDailyWordCount(100)}
                       style={styles.presetButton}
                     >
                       100
@@ -270,8 +280,8 @@ const ProfileScreen = () => {
                   <Button
                     mode="contained"
                     onPress={() => {
-                      const count = parseInt(wordCount, 10);
-                      if (!isNaN(count) && count >= 5 && count <= 100) {
+                      const count = settingsStore.dailyWordCount;
+                      if (count >= 5 && count <= 100) {
                         console.log(`设置单词数量为: ${count}`);
                         closeDrawer();
                       } else {
@@ -287,31 +297,26 @@ const ProfileScreen = () => {
 
               {drawerTitle === '辞书选择' && (
                 <>
-                  <Drawer.Item
-                    label="考研 考研英语词汇"
-                    icon="book-education"
-                    onPress={() => console.log('选择考研')}
-                  />
-                  <Drawer.Item
-                    label="TOEFL 托福词汇"
-                    icon="earth"
-                    onPress={() => console.log('选择TOEFL')}
-                  />
-                  <Drawer.Item
-                    label="SAT SAT词汇"
-                    icon="flag"
-                    onPress={() => console.log('选择SAT')}
-                  />
-                  <Drawer.Item
-                    label="CET-4 大学英语四级词汇"
-                    icon="school"
-                    onPress={() => console.log('选择CET4')}
-                  />
-                  <Drawer.Item
-                    label="CET-6 大学英语六级词汇"
-                    icon="school"
-                    onPress={() => console.log('选择CET6')}
-                  />
+                  {DICTIONARY_TYPES.map(dict => (
+                    <Drawer.Item
+                      key={dict.id}
+                      label={`${dict.description}`}
+                      icon={
+                        settingsStore.selectedDictionary === dict.id
+                          ? 'check-circle'
+                          : 'book-education'
+                      }
+                      onPress={() => {
+                        settingsStore.setSelectedDictionary(dict.id);
+                        console.log(`选择辞书: ${dict.name}`);
+                        closeDrawer();
+                      }}
+                      style={[
+                        settingsStore.selectedDictionary === dict.id &&
+                          styles.selectedItem,
+                      ]}
+                    />
+                  ))}
                 </>
               )}
             </Animated.View>
@@ -320,7 +325,7 @@ const ProfileScreen = () => {
       </Portal>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   profileContainer: {
@@ -340,7 +345,7 @@ const styles = StyleSheet.create({
     color: '#49454f',
   },
   logoutButton: {
-    marginTop: 20,
+    marginTop: 10,
     borderColor: '#d32f2f',
   },
   overlay: {
@@ -385,6 +390,9 @@ const styles = StyleSheet.create({
   },
   confirmButton: {
     marginTop: 15,
+  },
+  selectedItem: {
+    backgroundColor: '#e3f2fd',
   },
 });
 

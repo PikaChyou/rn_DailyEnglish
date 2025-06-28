@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, useRef } from 'react';
 import RootStore from '../stores/RootStore';
 
 const StoreContext = createContext<RootStore | null>(null);
@@ -8,7 +8,8 @@ interface StoreProviderProps {
 }
 
 export const StoreProvider: React.FC<StoreProviderProps> = ({ children }) => {
-  const rootStore = new RootStore();
+  // 使用 useRef 确保 rootStore 只创建一次
+  const rootStore = useRef(new RootStore()).current;
 
   return (
     <StoreContext.Provider value={rootStore}>{children}</StoreContext.Provider>

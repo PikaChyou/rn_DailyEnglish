@@ -53,7 +53,7 @@ class SettingsStore {
   // 获取选择的辞书显示文本
   get selectedDictionaryText(): string {
     const dict = this.currentDictionary;
-    return dict ? `${dict.name} - ${dict.description}` : '未选择';
+    return dict ? `${dict.description}` : '未选择';
   }
 }
 
