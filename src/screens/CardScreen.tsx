@@ -5,12 +5,14 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from '../contexts/StoreContext';
 import { commonStyles } from '../styles/commonStyles';
 
-// 导入词汇数据
-const CET4_DATA = require('../../assets/CET4.json');
-const CET6_DATA = require('../../assets/CET6.json');
-const KAOYAN_DATA = require('../../assets/Kaoyan.json');
-const SAT_DATA = require('../../assets/SAT.json');
-const TOEFL_DATA = require('../../assets/TOEFL.json');
+// 词汇数据
+const WORD_DATA = [
+  ...require('../../assets/CET4.json'),
+  ...require('../../assets/CET6.json'),
+  ...require('../../assets/Kaoyan.json'),
+  ...require('../../assets/SAT.json'),
+  ...require('../../assets/TOEFL.json'),
+];
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -32,21 +34,11 @@ interface WordItem {
 
 const CardScreen = observer(() => {
   const { settingsStore } = useStore();
-  const [_currentIndex, _setCurrentIndex] = useState(0);
   const [dailyWords, setDailyWords] = useState<WordItem[]>([]);
 
-  // 根据全局设置选择对应数量的词汇
   useEffect(() => {
-    const allWords = [
-      ...CET4_DATA,
-      ...CET6_DATA,
-      ...KAOYAN_DATA,
-      ...SAT_DATA,
-      ...TOEFL_DATA,
-    ];
-    const shuffled = allWords.sort(() => 0.5 - Math.random());
-    const selected = shuffled.slice(0, settingsStore.dailyWordCount);
-    setDailyWords(selected);
+    const shuffled = WORD_DATA.sort(() => 0.5 - Math.random());
+    setDailyWords(shuffled.slice(0, settingsStore.dailyWordCount));
   }, [settingsStore.dailyWordCount]);
 
   const renderWordCard = ({
@@ -55,70 +47,66 @@ const CardScreen = observer(() => {
   }: {
     item: WordItem;
     index: number;
-  }) => {
-    return (
-      <View style={styles.cardContainer}>
-        <View style={styles.wordCard}>
-          <View style={styles.cardContent}>
-            <Text variant="headlineLarge" style={styles.wordText}>
-              {item.word}
-            </Text>
+  }) => (
+    <View style={styles.cardContainer}>
+      <View style={styles.wordCard}>
+        <View style={styles.cardContent}>
+          <Text variant="headlineLarge" style={styles.wordText}>
+            {item.word}
+          </Text>
 
-            <View style={styles.translationsContainer}>
-              {item.translations.map((trans, idx) => (
-                <View key={idx} style={styles.translationRow}>
-                  <Chip style={styles.typeChip} compact>
-                    {trans.type}
-                  </Chip>
-                  <Text variant="bodyLarge" style={styles.translationText}>
-                    {trans.translation}
+          <View style={styles.translationsContainer}>
+            {item.translations.map((trans, idx) => (
+              <View key={idx} style={styles.translationRow}>
+                <Chip style={styles.typeChip} compact>
+                  {trans.type}
+                </Chip>
+                <Text variant="bodyLarge" style={styles.translationText}>
+                  {trans.translation}
+                </Text>
+              </View>
+            ))}
+          </View>
+
+          {item.phrases && item.phrases.length > 0 && (
+            <View style={styles.phrasesContainer}>
+              <Text style={styles.phrasesTitle}>常用短语</Text>
+              {item.phrases.slice(0, 2).map((phrase, idx) => (
+                <View key={idx} style={styles.phraseRow}>
+                  <Text style={styles.phraseText}>{phrase.phrase}</Text>
+                  <Text style={styles.phraseTranslation}>
+                    {phrase.translation}
                   </Text>
                 </View>
               ))}
             </View>
+          )}
+        </View>
 
-            {item.phrases && item.phrases.length > 0 && (
-              <View style={styles.phrasesContainer}>
-                <Text style={styles.phrasesTitle}>常用短语</Text>
-                {item.phrases.slice(0, 2).map((phrase, idx) => (
-                  <View key={idx} style={styles.phraseRow}>
-                    <View style={styles.phraseContent}>
-                      <Text style={styles.phraseText}>{phrase.phrase}</Text>
-                      <Text style={styles.phraseTranslation}>
-                        {phrase.translation}
-                      </Text>
-                    </View>
-                  </View>
-                ))}
-              </View>
-            )}
-          </View>
-
-          <View style={styles.cardActions}>
-            <Text variant="bodySmall" style={styles.progressText}>
-              {index + 1} / {dailyWords.length}
-            </Text>
-            <View style={styles.actionButtons}>
-              <Button
-                mode="outlined"
-                onPress={() => console.log('标记为困难')}
-                style={styles.actionButton}
-              >
-                困难
-              </Button>
-              <Button
-                mode="contained"
-                onPress={() => console.log('已掌握')}
-                style={styles.actionButton}
-              >
-                掌握
-              </Button>
-            </View>
+        <View style={styles.cardActions}>
+          <Text variant="bodySmall" style={styles.progressText}>
+            {index + 1} / {dailyWords.length}
+          </Text>
+          <View style={styles.actionButtons}>
+            <Button
+              mode="outlined"
+              onPress={() => console.log('标记为困难')}
+              style={styles.actionButton}
+            >
+              困难
+            </Button>
+            <Button
+              mode="contained"
+              onPress={() => console.log('已掌握')}
+              style={styles.actionButton}
+            >
+              掌握
+            </Button>
           </View>
         </View>
       </View>
-    );
-  };
+    </View>
+  );
 
   if (dailyWords.length === 0) {
     return (
@@ -137,16 +125,13 @@ const CardScreen = observer(() => {
       <FlatList
         data={dailyWords}
         renderItem={renderWordCard}
-        keyExtractor={(item: WordItem, index: number) =>
-          `${item.word}-${index}`
-        }
+        keyExtractor={(item, index) => `${item.word}-${index}`}
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
         snapToAlignment="center"
         decelerationRate="fast"
-        contentContainerStyle={styles.flatListContainer}
-        getItemLayout={(data: any, index: number) => ({
+        getItemLayout={(_, index) => ({
           length: screenWidth,
           offset: screenWidth * index,
           index,
@@ -160,9 +145,6 @@ const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
     backgroundColor: '#f5f5f5',
-  },
-  flatListContainer: {
-    flexGrow: 1,
   },
   cardContainer: {
     width: screenWidth,
@@ -230,9 +212,6 @@ const styles = StyleSheet.create({
   },
   phraseRow: {
     marginBottom: 20,
-  },
-  phraseContent: {
-    paddingLeft: 0,
   },
   phraseText: {
     fontWeight: '600',

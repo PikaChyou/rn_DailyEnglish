@@ -16,17 +16,6 @@ import { useStore } from '../contexts/StoreContext';
 import { commonStyles } from '../styles/commonStyles';
 import { DICTIONARY_TYPES } from '../stores/SettingsStore';
 
-// 图标组件定义
-const AccountIcon = (props: any) => <List.Icon {...props} icon="account" />;
-const ChevronRightIcon = (props: any) => (
-  <List.Icon {...props} icon="chevron-right" />
-);
-const CogIcon = (props: any) => <List.Icon {...props} icon="cog" />;
-const CameraIcon = (props: any) => <List.Icon {...props} icon="camera" />;
-const AccountEditIcon = (props: any) => (
-  <List.Icon {...props} icon="account-edit" />
-);
-
 const ProfileScreen = observer(() => {
   const { settingsStore } = useStore();
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -53,9 +42,7 @@ const ProfileScreen = observer(() => {
         duration: 100,
         useNativeDriver: true,
       }),
-    ]).start(() => {
-      setDrawerVisible(false);
-    });
+    ]).start(() => setDrawerVisible(false));
   };
 
   useEffect(() => {
@@ -104,36 +91,36 @@ const ProfileScreen = observer(() => {
           <List.Item
             title="用户信息"
             description="修改昵称和邮箱"
-            left={AccountEditIcon}
-            right={ChevronRightIcon}
+            left={props => <List.Icon {...props} icon="account-edit" />}
+            right={props => <List.Icon {...props} icon="chevron-right" />}
             onPress={() => openDrawer('用户信息')}
           />
           <List.Item
             title="社交头像"
             description="更换或编辑个人头像"
-            left={CameraIcon}
-            right={ChevronRightIcon}
+            left={props => <List.Icon {...props} icon="camera" />}
+            right={props => <List.Icon {...props} icon="chevron-right" />}
             onPress={() => openDrawer('自定义头像')}
           />
           <List.Item
             title="学习计划"
             description={settingsStore.dailyWordCountText}
-            left={AccountIcon}
-            right={ChevronRightIcon}
+            left={props => <List.Icon {...props} icon="account" />}
+            right={props => <List.Icon {...props} icon="chevron-right" />}
             onPress={() => openDrawer('学习计划')}
           />
           <List.Item
             title="辞书选择"
             description={settingsStore.selectedDictionaryText}
-            left={CogIcon}
-            right={ChevronRightIcon}
+            left={props => <List.Icon {...props} icon="cog" />}
+            right={props => <List.Icon {...props} icon="chevron-right" />}
             onPress={() => openDrawer('辞书选择')}
           />
           <List.Item
             title="关于我们"
             description="了解更多关于我们的信息"
-            left={AccountIcon}
-            right={ChevronRightIcon}
+            left={props => <List.Icon {...props} icon="account" />}
+            right={props => <List.Icon {...props} icon="chevron-right" />}
             onPress={() => console.log('关于我们')}
           />
         </List.Section>
@@ -239,43 +226,28 @@ const ProfileScreen = observer(() => {
                     placeholder="请输入5-100之间的数字"
                   />
                   <View style={styles.buttonRow}>
-                    <Button
-                      mode="outlined"
-                      onPress={() => settingsStore.setDailyWordCount(20)}
-                      style={styles.presetButton}
-                    >
-                      20
-                    </Button>
-                    <Button
-                      mode="outlined"
-                      onPress={() => settingsStore.setDailyWordCount(40)}
-                      style={styles.presetButton}
-                    >
-                      40
-                    </Button>
-                    <Button
-                      mode="outlined"
-                      onPress={() => settingsStore.setDailyWordCount(60)}
-                      style={styles.presetButton}
-                    >
-                      60
-                    </Button>
+                    {[20, 40, 60].map(count => (
+                      <Button
+                        key={count}
+                        mode="outlined"
+                        onPress={() => settingsStore.setDailyWordCount(count)}
+                        style={styles.presetButton}
+                      >
+                        {count}
+                      </Button>
+                    ))}
                   </View>
                   <View style={styles.buttonRow}>
-                    <Button
-                      mode="outlined"
-                      onPress={() => settingsStore.setDailyWordCount(80)}
-                      style={styles.presetButton}
-                    >
-                      80
-                    </Button>
-                    <Button
-                      mode="outlined"
-                      onPress={() => settingsStore.setDailyWordCount(100)}
-                      style={styles.presetButton}
-                    >
-                      100
-                    </Button>
+                    {[80, 100].map(count => (
+                      <Button
+                        key={count}
+                        mode="outlined"
+                        onPress={() => settingsStore.setDailyWordCount(count)}
+                        style={styles.presetButton}
+                      >
+                        {count}
+                      </Button>
+                    ))}
                   </View>
                   <Button
                     mode="contained"

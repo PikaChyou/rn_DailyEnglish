@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { StatusBar } from 'react-native';
 import { PaperProvider, BottomNavigation } from 'react-native-paper';
 import { StoreProvider } from './src/contexts/StoreContext';
-
-// 导入页面组件
 import CalendarScreen from './src/screens/CalendarScreen';
 import CardScreen from './src/screens/CardScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
@@ -49,12 +47,12 @@ const App = () => {
           navigationState={{ index, routes }}
           onIndexChange={setIndex}
           renderScene={renderScene}
-          sceneAnimationEnabled={true}
+          sceneAnimationEnabled
           sceneAnimationType="opacity"
           activeColor="#6750a4"
           inactiveColor="#757575"
           labeled={false}
-          shifting={true}
+          shifting
         />
       </PaperProvider>
     </StoreProvider>

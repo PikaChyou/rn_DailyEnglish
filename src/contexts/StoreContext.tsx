@@ -8,9 +8,7 @@ interface StoreProviderProps {
 }
 
 export const StoreProvider: React.FC<StoreProviderProps> = ({ children }) => {
-  // 使用 useRef 确保 rootStore 只创建一次
   const rootStore = useRef(new RootStore()).current;
-
   return (
     <StoreContext.Provider value={rootStore}>{children}</StoreContext.Provider>
   );

@@ -15,45 +15,35 @@ export const DICTIONARY_TYPES: DictionaryType[] = [
 ];
 
 class SettingsStore {
-  // 每日学习单词数量
-  dailyWordCount: number = 20;
-
-  // 选择的辞书类别
-  selectedDictionary: string = 'CET4';
+  dailyWordCount = 20;
+  selectedDictionary = 'CET4';
 
   constructor() {
     makeAutoObservable(this);
   }
 
-  // 设置每日学习单词数量
   setDailyWordCount = (count: number) => {
     if (count >= 5 && count <= 100) {
       this.dailyWordCount = count;
     }
   };
 
-  // 设置选择的辞书
   setSelectedDictionary = (dictionaryId: string) => {
-    const exists = DICTIONARY_TYPES.some(dict => dict.id === dictionaryId);
-    if (exists) {
+    if (DICTIONARY_TYPES.some(dict => dict.id === dictionaryId)) {
       this.selectedDictionary = dictionaryId;
     }
   };
 
-  // 获取当前选择的辞书信息
-  get currentDictionary(): DictionaryType | undefined {
+  get currentDictionary() {
     return DICTIONARY_TYPES.find(dict => dict.id === this.selectedDictionary);
   }
 
-  // 获取每日学习单词数量的显示文本
-  get dailyWordCountText(): string {
+  get dailyWordCountText() {
     return `每天学习 ${this.dailyWordCount} 个单词`;
   }
 
-  // 获取选择的辞书显示文本
-  get selectedDictionaryText(): string {
-    const dict = this.currentDictionary;
-    return dict ? `${dict.description}` : '未选择';
+  get selectedDictionaryText() {
+    return this.currentDictionary?.description || '未选择';
   }
 }
 
