@@ -4,15 +4,12 @@ import { Text, Button, Chip } from 'react-native-paper';
 import { observer } from 'mobx-react-lite';
 import { useStore } from '../contexts/StoreContext';
 import { commonStyles } from '../styles/commonStyles';
-
-// 词汇数据
-const WORD_DATA = [
-  ...require('../../assets/CET4.json'),
-  ...require('../../assets/CET6.json'),
-  ...require('../../assets/Kaoyan.json'),
-  ...require('../../assets/SAT.json'),
-  ...require('../../assets/TOEFL.json'),
-];
+import {
+  WORD_DATA,
+  selectWordsByHash,
+  createHashSeed,
+  getTodayString,
+} from '../utils/wordUtils';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -37,9 +34,19 @@ const CardScreen = observer(() => {
   const [dailyWords, setDailyWords] = useState<WordItem[]>([]);
 
   useEffect(() => {
-    const shuffled = WORD_DATA.sort(() => 0.5 - Math.random());
-    setDailyWords(shuffled.slice(0, settingsStore.dailyWordCount));
-  }, [settingsStore.dailyWordCount]);
+    const today = getTodayString();
+    const seed = createHashSeed(
+      today,
+      settingsStore.dailyWordCount,
+      settingsStore.selectedDictionary,
+    );
+    const selectedWords = selectWordsByHash(
+      WORD_DATA,
+      settingsStore.dailyWordCount,
+      seed,
+    );
+    setDailyWords(selectedWords);
+  }, [settingsStore.dailyWordCount, settingsStore.selectedDictionary]);
 
   const renderWordCard = ({
     item,
@@ -88,18 +95,10 @@ const CardScreen = observer(() => {
             {index + 1} / {dailyWords.length}
           </Text>
           <View style={styles.actionButtons}>
-            <Button
-              mode="outlined"
-              onPress={() => console.log('标记为困难')}
-              style={styles.actionButton}
-            >
+            <Button mode="outlined" style={styles.actionButton}>
               困难
             </Button>
-            <Button
-              mode="contained"
-              onPress={() => console.log('已掌握')}
-              style={styles.actionButton}
-            >
+            <Button mode="contained" style={styles.actionButton}>
               掌握
             </Button>
           </View>

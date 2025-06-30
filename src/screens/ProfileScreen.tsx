@@ -121,7 +121,7 @@ const ProfileScreen = observer(() => {
             description="了解更多关于我们的信息"
             left={props => <List.Icon {...props} icon="account" />}
             right={props => <List.Icon {...props} icon="chevron-right" />}
-            onPress={() => console.log('关于我们')}
+            onPress={() => openDrawer('关于我们')}
           />
         </List.Section>
 
@@ -291,6 +291,14 @@ const ProfileScreen = observer(() => {
                   ))}
                 </>
               )}
+
+              {drawerTitle === '关于我们' && (
+                <>
+                  <Text variant="bodyLarge" style={styles.aboutText}>
+                    Ciallo～(∠・ω{'<'} )⌒★
+                  </Text>
+                </>
+              )}
             </Animated.View>
           </Animated.View>
         )}
@@ -365,6 +373,11 @@ const styles = StyleSheet.create({
   },
   selectedItem: {
     backgroundColor: '#e3f2fd',
+  },
+  aboutText: {
+    textAlign: 'center',
+    color: '#666',
+    lineHeight: 48,
   },
 });
 

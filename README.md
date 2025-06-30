@@ -1,97 +1,72 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# 项目说明
 
-# Getting Started
+##  项目结构
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
-
-## Step 1: Start Metro
-
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
-
-To start the Metro dev server, run the following command from the root of your React Native project:
-
-```sh
-# Using npm
-npm start
-
-# OR using Yarn
-yarn start
+```
+Demo/
+├── .bundle/                          # Bundle 配置
+├── .eslintrc.js                      # ESLint 配置
+├── .git/                             # Git 版本控制
+├── .gitignore                        # Git 忽略文件配置
+├── .prettierrc.js                    # Prettier 代码格式化配置
+├── .vscode/                          # VS Code 配置
+├── .watchmanconfig                   # Watchman 配置
+├── android/                          # Android 原生代码
+├── ios/                              # iOS 原生代码
+├── node_modules/                     # 依赖包
+├── __tests__/                        # 测试文件
+├── assets/                           # 静态资源
+│   ├── CET4.json                     # CET4 词汇数据
+│   ├── CET6.json                     # CET6 词汇数据
+│   ├── Kaoyan.json                   # 考研词汇数据
+│   ├── SAT.json                      # SAT 词汇数据
+│   ├── TOEFL.json                    # TOEFL 词汇数据
+│   └── ktn.jpg                       # 图片资源
+├── src/                              # 源代码目录
+│   ├── contexts/                     # React Context
+│   │   └── StoreContext.tsx          # MobX Store 上下文
+│   ├── screens/                      # 页面组件
+│   │   ├── CalendarScreen.tsx        # 日历页面
+│   │   ├── CardScreen.tsx            # 单词卡片页面
+│   │   ├── ProfileScreen.tsx         # 个人信息页面
+│   │   ├── ReviewScreen.tsx          # 复习页面
+│   │   └── index.ts                  # 页面导出文件
+│   ├── stores/                       # MobX 状态管理
+│   │   ├── RootStore.ts              # 根 Store
+│   │   ├── SettingsStore.ts          # 设置 Store
+│   │   ├── WordHistoryStore.ts       # 单词历史 Store
+│   │   └── index.ts                  # Store 导出文件
+│   ├── styles/                       # 样式文件
+│   │   ├── appStyles.ts              # 应用主样式
+│   │   ├── commonStyles.ts           # 通用样式
+│   │   └── index.ts                  # 样式导出文件
+│   ├── utils/                        # 工具函数
+│   │   └── wordUtils.ts              # 单词相关工具函数
+│   └── README.md                     # 项目说明文档
+├── App.tsx                           # 应用根组件
+├── index.js                          # 应用入口文件
+├── app.json                          # 应用配置
+├── babel.config.js                   # Babel 配置
+├── jest.config.js                    # Jest 测试配置
+├── metro.config.js                   # Metro 打包配置
+├── tsconfig.json                     # TypeScript 配置
+├── package.json                      # 项目依赖配置
+├── package-lock.json                 # 依赖锁定文件
+├── Gemfile                           # Ruby 依赖（iOS）
+└── README.md                         # 项目根说明文档
 ```
 
-## Step 2: Build and run your app
+## 实现功能
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+- 卡片式单词学习
+- 用户个人信息设置
+- 每日学习单词数量设置
+- 学习词汇类型选择
+- 活跃日期展示
+- 单词复习功能（？）
 
-### Android
+## 未实现功能
 
-```sh
-# Using npm
-npm run android
-
-# OR using Yarn
-yarn android
-```
-
-### iOS
-
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
-```
-
-Then, and every time you update your native dependencies, run:
-
-```sh
-bundle exec pod install
-```
-
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
-
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
-
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+- 无效的卡片按钮（无法区分学习状态）
+- 复习单词不一定出现在已学习列表当中
+- 用户登录系统缺失（写不完了算了）

@@ -5,6 +5,7 @@ import { StoreProvider } from './src/contexts/StoreContext';
 import CalendarScreen from './src/screens/CalendarScreen';
 import CardScreen from './src/screens/CardScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
+import ReviewScreen from './src/screens/ReviewScreen';
 
 const App = () => {
   const [index, setIndex] = useState(0);
@@ -14,6 +15,12 @@ const App = () => {
       title: '卡片',
       focusedIcon: 'school',
       unfocusedIcon: 'school-outline',
+    },
+    {
+      key: 'review',
+      title: '复习',
+      focusedIcon: 'book',
+      unfocusedIcon: 'book-outline',
     },
     {
       key: 'calendar',
@@ -32,6 +39,7 @@ const App = () => {
   const renderScene = BottomNavigation.SceneMap({
     calendar: CalendarScreen,
     card: CardScreen,
+    review: ReviewScreen,
     profile: ProfileScreen,
   });
 
