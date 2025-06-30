@@ -1,4 +1,5 @@
 # 项目说明
+采用ReactNative框架与react-native-paper组件库搭建的每日英语单词学习app  
 
 ##  项目结构
 
